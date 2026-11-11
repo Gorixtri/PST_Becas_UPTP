@@ -123,7 +123,7 @@
 
     <!-- 3. PIE DE PÁGINA -->
     <footer class="footer-institucional">
-        Proyecto Socio Tecnológico II - Sección 336 | PNF en Informática © 2026
+        Proyecto Socio Tecnológico II - Sección 436 | PNF en Informática © 2026
     </footer>
 
 </body>
