@@ -14,13 +14,13 @@ class AuthController {
     }
 
     public function login(string $email, string $password): void {
-        // 1. Límite de intentos (Candado de seguridad)
+        // 1. Candado de intentos (Límite 3)
         if (!isset($_SESSION['intentos_fallidos'])) {
             $_SESSION['intentos_fallidos'] = 0;
         }
 
         if ($_SESSION['intentos_fallidos'] >= 3) {
-            $_SESSION['error'] = "Cuenta bloqueada temporalmente. Demasiados intentos fallidos.";
+            $_SESSION['error'] = "Has alcanzado el número máximo de 3 intentos fallidos. Por tu seguridad, la cuenta ha sido bloqueada. Intenta de nuevo en 5 minutos.";
             header("Location: index.php?route=login");
             exit();
         }
@@ -57,6 +57,11 @@ class AuthController {
             $_SESSION['email'] = $usuario['email'];
             $_SESSION['rol'] = $usuario['rol'];
             
+            // 🛡️ MEDIDA DE SEGURIDAD: Huella de Sesión (Anti-Hijacking)
+            $_SESSION['ip_usuario'] = $_SERVER['REMOTE_ADDR'];
+            $_SESSION['navegador'] = $_SERVER['HTTP_USER_AGENT'];
+            $_SESSION['ultima_actividad'] = time();
+            
             header("Location: index.php?route=dashboard");
             exit();
         } else {
@@ -67,7 +72,7 @@ class AuthController {
             if ($restantes > 0) {
                 $_SESSION['error'] = "Credenciales incorrectas. Te quedan {$restantes} intentos.";
             } else {
-                $_SESSION['error'] = "Cuenta bloqueada por 3 intentos fallidos.";
+                $_SESSION['error'] = "Has alcanzado el número máximo de 3 intentos fallidos. Por tu seguridad, la cuenta ha sido bloqueada.";
             }
             header("Location: index.php?route=login");
             exit();
